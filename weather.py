@@ -4,7 +4,6 @@ import datetime
 import time
 import pyttsx
 import calendar
-import feedparser
 
 def time_converter(time):
     converted_time = datetime.datetime.fromtimestamp(
@@ -49,7 +48,7 @@ def data_organizer(raw_api_dict):
     )
     return data
 
-#print data to command line
+#print data to command line for debugging
 def data_output(data):
     m_symbol = '\xb0' + 'C'
     print('---------------------------------------')
@@ -66,32 +65,3 @@ def data_output(data):
     print('')
     print('Last update from the server: {}'.format(data['dt']))
     print('---------------------------------------')
-
-city_id = input('Enter city ID: ')
-weather_data = data_organizer(data_fetch(url_builder(city_id)))
-data_output(weather_data)
-
-#concat today's  date into a handy lil string
-my_date = str(datetime.date.today().strftime("%A") + ', ' + datetime.date.today().strftime("%B") + ' ' + datetime.date.today().strftime("%d"))
-
-#grab top 5 headlines from NBC NY rss feed
-url1 = "http://www.nbcboston.com/news/top-stories/?rss=y&embedThumb=y&summary=y"
-[print (i.title) for i in feedparser.parse(url1).entries[:5]]
-
-
-engine = pyttsx.init()
-voices = engine.getProperty('voices')
-engine.setProperty('voice', voices[1].id)
-
-engine.say('Good morning hoozayfa')
-engine.say('Today is ')
-engine.say(my_date)
-
-engine.say('Current weather in: {}, {}:'.format(weather_data['city'], weather_data['country']))
-engine.say('It is currently {} degrees, with {}'.format(int(round(weather_data['temp'], 0)), weather_data['sky']))
-
-engine.say('Top headlines for today from NBC Boston: ')
-for i in feedparser.parse(url1).entries[:5]:
-	engine.say(i.title)
-
-engine.runAndWait()
